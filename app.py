@@ -62,7 +62,7 @@ with st.sidebar:
     st.info("Unutma: Bu günün zəhməti, sabahın uğurudur! 📚")
 
 # Əsas Hissə
-st.title("⚡ Murad AI Ultra Downloader")
+st.title("⚡ Murad 642 Ultra Downloader")
 st.write("Instagram, TikTok, YouTube və s. — Ən yüksək keyfiyyətdə yüklə.")
 
 with st.container():

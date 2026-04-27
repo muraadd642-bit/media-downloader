@@ -2,131 +2,138 @@ import streamlit as st
 import yt_dlp
 import os
 from datetime import datetime
+import random
 
 # Səhifə Ayarları
-st.set_page_config(page_title="Murad 642 - Ultra Downloader", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="Murad AI - Ultra Downloader", page_icon="⚡", layout="wide")
 
-# Müasir CSS Dizaynı
+# Müasir Neon Dark CSS
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        color: #f8fafc;
+        background: #0a0a0a;
+        color: #e2e8f0;
     }
     .main-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 20px;
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(15px);
+        border-radius: 25px;
+        padding: 40px;
+        border: 1px solid #3b82f6;
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
     }
     .stButton>button {
-        width: 100%;
-        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
         color: white;
-        border: none;
-        border-radius: 12px;
+        border-radius: 15px;
         padding: 15px;
+        font-size: 18px;
         font-weight: bold;
-        transition: 0.3s;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        transform: scale(1.02);
+        box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
     }
-    .countdown-box {
+    .exam-timer {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid #ef4444;
+        padding: 20px;
+        border-radius: 20px;
         text-align: center;
-        padding: 15px;
-        background: rgba(59, 130, 246, 0.1);
-        border-radius: 15px;
-        border: 1px solid #3b82f6;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# Yan Panel (Sidebar) - İmtahan Geri Sayımı
+# 1. Funksiya: Motivasiya Mesajları
+quotes = [
+    "Az qaldı Murad, iyunun 7-si sənin günün olacaq! 🎓",
+    "Bu gün həll etdiyin bir test, sabahın universitet qapısıdır. 📚",
+    "Kod yazmaq hünər istəyir, sən bunu bacarırsan! 💻",
+    "Yorulduğunda dincəl, amma imtina etmə. ✨",
+    "Mercedes W211-in xəyalı ilə dərslərə davam! 🚗"
+]
+
+# Sidebar - İdarə Paneli
 with st.sidebar:
-    st.title("🎯 Hədəf 7 İyun")
-    exam_date = datetime(2026, 6, 7)
-    now = datetime.now()
-    delta = exam_date - now
+    st.image("https://img.icons8.com/clouds/200/download.png")
+    st.title("🛡️ Murad AI Panel")
     
+    # Canlı Geri Sayım
+    exam_date = datetime(2026, 6, 7)
+    delta = exam_date - datetime.now()
     st.markdown(f"""
-    <div class="countdown-box">
-        <h2 style='color: #3b82f6; margin:0;'>{delta.days} GÜN</h2>
-        <p style='margin:0;'>Blok İmtahanına Qaldı</p>
+    <div class="exam-timer">
+        <h3 style='color: #ef4444; margin:0;'>{delta.days} GÜN</h3>
+        <p style='margin:0; font-size: 14px;'>Blok İmtahanına Qaldı</p>
     </div>
     """, unsafe_allow_html=True)
     
-    st.info("Unutma: Bu günün zəhməti, sabahın uğurudur! 📚")
+    st.divider()
+    st.write(f"📅 Tarix: {datetime.now().strftime('%d.%m.%Y')}")
+    st.write(f"⏰ Bakı Vaxtı: {datetime.now().strftime('%H:%M')}")
 
-# Əsas Hissə
-st.title("⚡ Murad 642 Ultra Downloader")
-st.write("Instagram, TikTok, YouTube və s. — Ən yüksək keyfiyyətdə yüklə.")
+# Əsas Ekran
+st.title("🚀 SSSMurad - Media Downloader")
+st.info(random.choice(quotes))
 
+# Yükləmə Bölməsi
 with st.container():
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     
-    url = st.text_input("🔗 Media Linkini Daxil Edin:", placeholder="https://...")
+    url = st.text_input("🔗 Instagram / TikTok / YouTube Linki:", placeholder="Link bura yapışdırılır...")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        format_choice = st.selectbox("Format Seçin:", ["Video (MP4)", "Musiqi (MP3)"])
-    with col2:
-        quality_choice = st.selectbox("Keyfiyyət (Video üçün):", ["Ən Yaxşı", "1080p", "720p", "480p"])
+    c1, c2 = st.columns(2)
+    with c1:
+        fmt = st.selectbox("Format:", ["🎬 Video (MP4)", "🎵 Musiqi (MP3)"])
+    with c2:
+        qual = st.selectbox("Keyfiyyət:", ["Ən Yaxşı", "1080p", "720p", "480p"])
 
-    if st.button("🚀 Hazırla və Yüklə"):
+    if st.button("🔥 İNDİ YÜKLƏ"):
         if url:
             try:
-                # Yükləmə tənzimləmələri
-                ydl_opts = {
-                    'outtmpl': 'downloads/%(title)s.%(ext)s',
-                    'quiet': True,
-                    'no_warnings': True,
-                }
+                with st.spinner("Murad AI sizin üçün bazadan çəkir... ✨"):
+                    # Instagram Fix üçün ən güclü Headers
+                    ydl_opts = {
+                        'outtmpl': 'downloads/%(title)s.%(ext)s',
+                        'http_headers': {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                            'Accept': '*/*',
+                            'Referer': 'https://www.instagram.com/',
+                        },
+                        'extractor_args': {'instagram': {'get_video_id': ['web_api']}},
+                    }
 
-                if format_choice == "Musiqi (MP3)":
-                    ydl_opts['format'] = 'bestaudio/best'
-                    ydl_opts['postprocessors'] = [{
-                        'key': 'FFmpegExtractAudio',
-                        'preferredcodec': 'mp3',
-                        'preferredquality': '192',
-                    }]
-                else:
-                    # Keyfiyyətə görə format seçimi
-                    q_map = {"1080p": "1080", "720p": "720", "480p": "480"}
-                    res = q_map.get(quality_choice, "best")
-                    if res == "best":
-                        ydl_opts['format'] = 'bestvideo+bestaudio/best'
+                    if "Musiqi" in fmt:
+                        ydl_opts['format'] = 'bestaudio/best'
+                        ydl_opts['postprocessors'] = [{
+                            'key': 'FFmpegExtractAudio',
+                            'preferredcodec': 'mp3',
+                            'preferredquality': '192',
+                        }]
                     else:
-                        ydl_opts['format'] = f'bestvideo[height<={res}]+bestaudio/best'
+                        res = {"1080p": "1080", "720p": "720", "480p": "480"}.get(qual, "best")
+                        ydl_opts['format'] = f'bestvideo[height<={res}]+bestaudio/best/best'
 
-                with st.spinner("Server emal edir... 🌪️"):
                     if not os.path.exists('downloads'): os.makedirs('downloads')
-                    
+
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(url, download=True)
-                        file_path = ydl.prepare_filename(info)
-                        if format_choice == "Musiqi (MP3)":
-                            file_path = os.path.splitext(file_path)[0] + ".mp3"
+                        f_name = ydl.prepare_filename(info)
+                        if "Musiqi" in fmt: f_name = os.path.splitext(f_name)[0] + ".mp3"
 
-                    with open(file_path, "rb") as f:
-                        st.download_button(
-                            label="⬇️ Faylı Cihaza Köçür",
-                            data=f,
-                            file_name=os.path.basename(file_path),
-                            mime="video/mp4" if "Video" in format_choice else "audio/mpeg"
-                        )
-                    st.success("Fayl hazırdır!")
-                    os.remove(file_path)
+                    with open(f_name, "rb") as f:
+                        st.download_button("📥 Faylı Cihaza Saxla", f, file_name=os.path.basename(f_name))
+                    
+                    st.success("Yükləmə uğurla tamamlandı! ✅")
+                    os.remove(f_name)
 
             except Exception as e:
-                st.error(f"Xəta baş verdi: {e}")
+                st.error(f"Xəta: Instagram serverləri hazırda blok tətbiq edir. Bir az sonra yoxlayın və ya başqa link sınayın. \n\nDetallar: {e}")
         else:
-            st.warning("Zəhmət olmasa link daxil edin!")
+            st.warning("Link daxil etmədiniz! ⚠️")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Footer
-st.markdown("<p style='text-align: center; color: #64748b;'>Made with ❤️ by Murad AI | 2026</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; margin-top: 50px; opacity: 0.5;'>Murad AI Portal v2.0 | Universitet Yolunda Uğurlar!</p>", unsafe_allow_html=True)
